@@ -1,6 +1,10 @@
 const {spawn, exec} = require('child_process')
+const path = require('path')
 
-exec('rm -f data/mongod.lock', (error, stdout, stderr) => {
+const dataFolderPath = path.join(__dirname,'data')
+const lockFilePath = path.join(dataFolderPath,'mongod.lock')
+
+exec('rm -f '+ lockFilePath, (error, stdout, stderr) => {
   if (error) {
     console.error(`exec error: ${error}`);
     return;
@@ -9,7 +13,7 @@ exec('rm -f data/mongod.lock', (error, stdout, stderr) => {
   console.log(`stderr: ${stderr}`);
 })
 
-const mongod = spawn('mongod', ['--dbpath','data','--storageEngine','mmapv1', '--quiet']);
+const mongod = spawn('mongod', ['--dbpath',dataFolderPath,'--storageEngine','mmapv1', '--quiet']);
 
 mongod.stdout.on('data', (data) => {
   console.log(`${data}`);
