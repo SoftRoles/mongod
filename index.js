@@ -1,10 +1,24 @@
-const {spawn, exec} = require('child_process')
+const { spawn, exec } = require('child_process')
 const path = require('path')
+const argparse = require('argparse').ArgumentParser
 
-const dataFolderPath = path.join(__dirname,'data')
-const lockFilePath = path.join(dataFolderPath,'mongod.lock')
+//-------------------------------------
+// arguments
+//-------------------------------------
+const argParser = new argparse({
+  addHelp: true,
+  description: 'Database service'
+})
+argParser.addArgument(['-e', '--storageEngine'], { help: 'Storage engine', defaultValue: 'wiredTiger' })
+const args = argParser.parseArgs()
 
-exec('rm -f '+ lockFilePath, (error, stdout, stderr) => {
+//-------------------------------------
+// child process
+//-------------------------------------
+const dataFolderPath = path.join(__dirname, 'data')
+const lockFilePath = path.join(dataFolderPath, 'mongod.lock')
+
+exec('rm -f ' + lockFilePath, (error, stdout, stderr) => {
   if (error) {
     console.error(`exec error: ${error}`);
     return;
@@ -13,7 +27,7 @@ exec('rm -f '+ lockFilePath, (error, stdout, stderr) => {
   console.log(`stderr: ${stderr}`);
 })
 
-const mongod = spawn('mongod', ['--dbpath',dataFolderPath,'--storageEngine','mmapv1', '--quiet']);
+const mongod = spawn('mongod', ['--dbpath', dataFolderPath, '--storageEngine', args.engine, '--quiet']);
 
 mongod.stdout.on('data', (data) => {
   console.log(`${data}`);
