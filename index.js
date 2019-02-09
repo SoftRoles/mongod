@@ -27,7 +27,7 @@ exec('rm -f ' + lockFilePath, (error, stdout, stderr) => {
   console.log(`stderr: ${stderr}`);
 })
 
-const mongod = spawn('mongod', ['--dbpath', dataFolderPath, '--storageEngine', args.engine, '--quiet']);
+const mongod = spawn('mongod', ['--dbpath', dataFolderPath, '--storageEngine', args.storageEngine, '--quiet']);
 
 mongod.stdout.on('data', (data) => {
   console.log(`${data}`);
