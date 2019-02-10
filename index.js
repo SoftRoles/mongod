@@ -1,3 +1,6 @@
+//=============================================================================
+// modules
+//=============================================================================
 const { spawn, exec } = require('child_process')
 const path = require('path')
 const argparse = require('argparse').ArgumentParser
@@ -12,9 +15,9 @@ const argParser = new argparse({
 argParser.addArgument(['-e', '--storageEngine'], { help: 'Storage engine', defaultValue: 'wiredTiger' })
 const args = argParser.parseArgs()
 
-//-------------------------------------
+//=============================================================================
 // child process
-//-------------------------------------
+//=============================================================================
 const dataFolderPath = path.join(__dirname, 'data')
 const lockFilePath = path.join(dataFolderPath, 'mongod.lock')
 
@@ -23,8 +26,6 @@ exec('rm -f ' + lockFilePath, (error, stdout, stderr) => {
     console.error(`exec error: ${error}`);
     return;
   }
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
 })
 
 const mongod = spawn('mongod', ['--dbpath', dataFolderPath, '--storageEngine', args.storageEngine, '--quiet']);
